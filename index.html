@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#f5f0e8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="MediScan" />
+  <title>MediScan</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════
+     SCREEN 1 · CAPTURE
+═══════════════════════════════ -->
+<div id="screen-capture" class="screen active">
+
+  <header class="app-header">
+    <div class="wordmark">
+      <span class="wordmark-cross">✚</span>
+      <span class="wordmark-text">MediScan</span>
+    </div>
+    <button class="icon-btn" onclick="App.openSettings()" aria-label="Settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="screen-body">
+    <div class="capture-lead">
+      <h1 class="page-title">Scan a document</h1>
+      <p class="page-sub">Take a photo or upload an image of your medical notes, prescription, or lab results.</p>
+    </div>
+
+    <!-- Drop / preview zone -->
+    <div class="image-zone" id="imageZone" onclick="App.openGallery()">
+      <div class="image-zone-inner" id="imageZoneInner">
+        <div class="zone-placeholder" id="zonePlaceholder">
+          <div class="zone-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </div>
+          <p class="zone-label">Tap to choose image</p>
+          <p class="zone-hint">or drag &amp; drop here</p>
+        </div>
+        <img id="capturedImage" alt="Document preview" />
+      </div>
+    </div>
+
+    <!-- Action row -->
+    <div class="capture-btns">
+      <button class="pill-btn pill-secondary" onclick="App.openCamera()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="5" width="22" height="15" rx="2"/><circle cx="12" cy="12" r="4"/><path d="M9 5l1.5-3h3L15 5"/></svg>
+        Camera
+      </button>
+      <button class="pill-btn pill-secondary" onclick="App.openGallery()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Gallery
+      </button>
+    </div>
+
+    <button class="cta-btn" id="btnToRedact" style="display:none" onclick="App.goTo('screen-redact')">
+      Continue to Redact
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+
+  <!-- Hidden inputs -->
+  <input type="file" id="cameraInput"  accept="image/*" capture="environment" style="display:none" onchange="App.handleImageFile(this)" />
+  <input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="App.handleImageFile(this)" />
+</div>
+
+
+<!-- ═══════════════════════════════
+     SCREEN 2 · REDACT
+═══════════════════════════════ -->
+<div id="screen-redact" class="screen">
+
+  <header class="app-header">
+    <button class="icon-btn" onclick="App.goTo('screen-capture')" aria-label="Back">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    </button>
+    <span class="header-title">Remove PII</span>
+    <div class="box-pill" id="boxCount">0 boxes</div>
+  </header>
+
+  <div class="redact-notice">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    Draw boxes over names, dates of birth, addresses, or any personal info.
+  </div>
+
+  <div class="canvas-wrap" id="canvasWrap">
+    <canvas id="redactCanvas"></canvas>
+  </div>
+
+  <div class="redact-footer">
+    <div class="redact-footer-top">
+      <div class="tool-group">
+        <button class="tool-btn active" id="toolBox" onclick="App.setTool('draw')" title="Box tool">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>
+          Box
+        </button>
+        <button class="tool-btn" id="toolPen" onclick="App.setTool('pen')" title="Pen tool">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+          Pen
+        </button>
+        <button class="tool-btn" id="toolErase" onclick="App.setTool('erase')" title="Erase">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7L3 16l10-10 7 7-2.5 2.5"/></svg>
+          Erase
+        </button>
+        <button class="tool-btn" onclick="App.clearBoxes()" title="Clear all">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+          Clear
+        </button>
+      </div>
+      <button class="cta-btn cta-inline" onclick="App.proceedToAnalysis()">
+        Analyse
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+    <div id="penSizeRow" class="pen-size-row" style="display:none">
+      <span class="pen-size-lbl">Size</span>
+      <input type="range" min="4" max="40" value="12" step="2"
+        class="pen-slider" oninput="App.setPenSize(this.value)" />
+      <span id="penSizeLabel" class="pen-size-lbl">12px</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════
+     SCREEN 3 · PROCESSING
+═══════════════════════════════ -->
+<div id="screen-processing" class="screen">
+  <div class="processing-center">
+    <div class="proc-ring">
+      <div class="proc-ring-inner"></div>
+    </div>
+    <p class="proc-label">Analysing document…</p>
+    <p class="proc-sub">Reading medical content, ignoring redacted areas.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════
+     SCREEN 4 · CHAT
+═══════════════════════════════ -->
+<div id="screen-chat" class="screen">
+
+  <header class="app-header chat-header">
+    <button class="icon-btn" onclick="App.goTo('screen-capture')" aria-label="New scan">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    </button>
+    <span class="header-title">Analysis</span>
+    <button class="thumb-btn" id="chatThumbBtn" onclick="App.toggleScannedText()">
+      <img id="chatThumb" alt="Document" />
+      <span>See scanned text</span>
+    </button>
+  </header>
+
+  <!-- Scanned text drawer -->
+  <div class="scanned-drawer" id="scannedDrawer" style="display:none">
+    <div class="scanned-inner">
+      <p class="scanned-heading">Scanned image sent to AI</p>
+      <img id="scannedFull" alt="Redacted document" />
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <!-- Suggestions -->
+  <div class="suggestions" id="suggestions"></div>
+
+  <!-- Input -->
+  <div class="chat-bar">
+    <textarea id="chatInput" placeholder="Type a reply…" rows="1"
+      onkeydown="App.handleKey(event)"
+      oninput="App.autoResize(this)"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="App.sendFollowUp()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════
+     SETTINGS SHEET
+═══════════════════════════════ -->
+<div id="settingsSheet" class="sheet-overlay" style="display:none" onclick="App.sheetBackdropClick(event)">
+  <div class="sheet-panel">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <h2 class="sheet-title">Settings</h2>
+      <button class="icon-btn" onclick="App.closeSettings()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="sheet-body">
+      <div class="field-group">
+        <label class="field-lbl" for="apiKeyInput">Groq API Key</label>
+        <input type="password" id="apiKeyInput" class="field-input" placeholder="gsk_…" autocomplete="off" />
+        <p class="field-hint">Stored in your browser only. Get yours at <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a></p>
+      </div>
+
+      <div class="field-group">
+        <label class="field-lbl" for="modelSelect">Model</label>
+        <div class="select-wrap">
+          <select id="modelSelect" class="field-input">
+            <option value="meta-llama/llama-4-scout-17b-16e-instruct">Llama 4 Scout 17B (Vision)</option>
+            <option value="meta-llama/llama-4-maverick-17b-128e-instruct" selected>Llama 4 Maverick 17B (Vision)</option>
+          </select>
+          <svg class="select-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <button class="cta-btn sheet-save" onclick="App.saveSettings()">Save</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
