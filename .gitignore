@@ -1,0 +1,36 @@
+# Editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Dependencies
+node_modules/
+
+# Next.js & Vercel
+.next/
+out/
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+.env.local
+!.env.example
+
+# Logs
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc caches
+.cache/
+.turbo/
